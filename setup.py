@@ -1,9 +1,9 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 
 setup(
     name='cactuskeeper',
     version='0.1',
-    py_modules='cactuskeeper',
+    packages=find_packages(),
     install_requires=[
         'Click',
         'gitpython'
