@@ -21,6 +21,10 @@ class MockRepo(mock.MagicMock):
         self.commits[branch].append(commit)
         self.commits_by_sha[sha] = commit
 
+    def add_commits(self, branch, commit_messages):
+        for message in commit_messages:
+            self.add_commit(branch, message)
+
     def add_existing_commit(self, branch, sha):
         self.commits[branch].append(self.commits_by_sha[sha])
 

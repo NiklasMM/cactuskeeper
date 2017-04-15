@@ -38,7 +38,7 @@ def test_get_release_branches_with_custom_regex():
     assert [(1, 2)] == [(x[1][0], x[1][1]) for x in result]
 
 
-def test_get_bugfixes():
+def test_get_bugfixes_relative():
     repo = MockRepo(branches=["release/1.2", "master"])
 
     repo.add_commit("release/1.2", "fix: something #2")
@@ -53,3 +53,17 @@ def test_get_bugfixes():
     result = get_bugfixes_for_branch(repo, "release/1.2", "master")
 
     assert result == ["#2", "#1"]
+
+
+def test_get_bugfixes_absolute():
+    repo = MockRepo(branches=["release/1.2", "master"])
+
+    repo.add_commits(
+        "release/1.2", [
+            "fix: something #2", "release: v1.2.1",
+            "fix: something #1", "release: 1.2", "fix: something #0"
+        ]
+    )
+    result = get_bugfixes_for_branch(repo, "release/1.2")
+
+    assert result == ["#2", "#1", "#0"]
