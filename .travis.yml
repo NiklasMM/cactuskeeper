@@ -9,7 +9,7 @@ before_install:
 # command to install dependencies
 install:
   - "pip install ."
-  - "pip install -U pytest"
+  - "pip install -r test_requirements.txt"
 # command to run tests
 script: pytest
 
