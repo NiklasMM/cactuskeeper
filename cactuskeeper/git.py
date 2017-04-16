@@ -1,7 +1,8 @@
 import re
 from itertools import takewhile
+from distutils.version import StrictVersion
 
-RELEASE_BRANCHES = re.compile(r"release/v(?P<major>\d+)\.(?P<minor>\d+)")
+RELEASE_BRANCHES = re.compile(r"release/v(?P<version>\d+\.\d+(\.\d+)?)")
 
 
 def get_release_branches(repo, release_branch_re=RELEASE_BRANCHES):
@@ -10,11 +11,13 @@ def get_release_branches(repo, release_branch_re=RELEASE_BRANCHES):
     for branch in repo.branches:
         m = release_branch_re.match(str(branch))
         if m:
-            release_branches.append(
-                (branch, (int(m.group("major")), int(m.group("minor"))))
-            )
+            version = StrictVersion(m.group("version"))
+            release_branches.append({
+                "version": version,
+                "branch": branch
+            })
 
-    return sorted(release_branches, key=lambda x: x[1], reverse=True)
+    return sorted(release_branches, key=lambda x: x["version"], reverse=True)
 
 
 def get_bugfixes_for_branch(repo, branch, base_branch=None):

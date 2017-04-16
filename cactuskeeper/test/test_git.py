@@ -1,6 +1,7 @@
 
 import re
 import pytest
+from distutils.version import StrictVersion
 
 from cactuskeeper.git import get_release_branches, get_bugfixes_for_branch
 from cactuskeeper.test.helpers import MockRepo
@@ -12,11 +13,11 @@ from cactuskeeper.test.helpers import MockRepo
         ([], []),
         (
             ("release/v1.23", "release/v0.4", "some_other_branch"),
-            [(1, 23), (0, 4)]
+            [StrictVersion("1.23"), StrictVersion("0.4")]
         ),
         (
             ("release/v0.4", "release/v1.23", "some_other_branch"),
-            [(1, 23), (0, 4)]
+            [StrictVersion("1.23"), StrictVersion("0.4")]
         )
     ]
 )
@@ -25,17 +26,21 @@ def test_get_release_branches(branches, expected):
 
     result = get_release_branches(repo)
 
-    assert expected == [(x[1][0], x[1][1]) for x in result]
+    assert len(expected) == len(result)
+
+    assert [x["version"] for x in result] == expected
 
 
 def test_get_release_branches_with_custom_regex():
-    custom_regex = re.compile(r"version(?P<major>\d+)\.(?P<minor>\d+)")
+    custom_regex = re.compile(r"version(?P<version>\d+\.\d+)")
 
     repo = MockRepo(branches=["release/v1.2", "version1.2", "version"])
 
     result = get_release_branches(repo, custom_regex)
 
-    assert [(1, 2)] == [(x[1][0], x[1][1]) for x in result]
+    assert 1 == len(result)
+
+    assert StrictVersion("1.2") == result[0]["version"]
 
 
 def test_get_bugfixes_relative():

@@ -17,6 +17,6 @@ def check(repo):
     current_branch = cc_repo.active_branch
 
     for release_branch in get_release_branches(cc_repo):
-        get_bugfixes_for_branch(cc_repo, release_branch, current_branch)
+        get_bugfixes_for_branch(cc_repo, release_branch["branch"], current_branch)
 
     click.echo("The current branch is clean")
