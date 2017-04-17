@@ -1,9 +1,10 @@
 
-import re
-import pytest
 from distutils.version import StrictVersion
+import re
 
-from cactuskeeper.git import get_release_branches, get_bugfixes_for_branch
+import pytest
+
+from cactuskeeper.git import get_bugfixes_for_branch, get_release_branches
 from cactuskeeper.test.helpers import MockRepo
 
 

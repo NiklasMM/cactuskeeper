@@ -1,6 +1,6 @@
-import re
-from itertools import takewhile
 from distutils.version import StrictVersion
+from itertools import takewhile
+import re
 
 RELEASE_BRANCHES = re.compile(r"release/v(?P<version>\d+\.\d+(\.\d+)?)")
 

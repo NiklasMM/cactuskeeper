@@ -1,8 +1,7 @@
+from click.testing import CliRunner
 import mock
 
-from click.testing import CliRunner
 from cactuskeeper.cli import cli
-
 from cactuskeeper.test.helpers import MockRepo
 
 

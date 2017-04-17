@@ -1,8 +1,9 @@
-import click
 import sys
+
+import click
 from git import Repo
 
-from cactuskeeper.git import get_release_branches, get_bugfixes_for_branch
+from cactuskeeper.git import get_bugfixes_for_branch, get_release_branches
 
 
 @click.group()

@@ -1,5 +1,6 @@
-import mock
 from collections import defaultdict
+
+import mock
 
 
 class MockRepo(mock.MagicMock):

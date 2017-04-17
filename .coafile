@@ -1,0 +1,23 @@
+[default]
+max_line_length = 100
+use_spaces = true
+no_orig = true
+
+[python]
+bears = PycodestyleBear, PyImportSortBear
+files = **/*.py
+#pycodestyle_ignore=E722,W503
+
+# PyImportSortBear config
+force_single_line_imports = false
+include_trailing_comma_in_import = true
+isort_multi_line_output = 3
+forced_separate_imports = cactuskeeper
+default_actions = *: ApplyPatchAction
+
+[git]
+bears = GitCommitBear
+body_line_length = 80
+shortlog_imperative_check = false
+shortlog_regex = (\w+\(.+\): [A-Z].*|release: v\d\.\d\d)
+shortlog_length = 80
