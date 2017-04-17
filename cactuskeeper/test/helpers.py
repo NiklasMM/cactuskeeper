@@ -11,6 +11,7 @@ class MockRepo(mock.MagicMock):
         self.branches = branches
         self.commits = defaultdict(list)
         self.commits_by_sha = {}
+        self._active_branch = None
 
     def add_commit(self, branch, commit_message, sha=None):
         if sha is None:
@@ -35,4 +36,7 @@ class MockRepo(mock.MagicMock):
 
     @property
     def active_branch(self):
-        return self.branches[0]
+        if self._active_branch is None:
+            return self.branches[0]
+        else:
+            return self._active_branch
