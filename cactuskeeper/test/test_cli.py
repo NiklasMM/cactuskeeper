@@ -33,7 +33,7 @@ def test_check_release_clean():
     """
     repo = MockRepo(branches=["master", "release/v0.9", "release/v0.8"])
 
-    repo.add_commit("release/v0.9", "fix: bla #123")
+    repo.add_commit("release/v0.9", "fix: bla \n blubi #123")
     repo.add_commit("release/v0.9", "release: v0.9", sha=1)
     repo.add_commit("release/v0.8", "release: v0.8", sha=0)
 
@@ -49,7 +49,7 @@ def test_check_release_clean():
         # master is not clean
         assert result.exit_code == 1
         assert "release/v0.9" in result.output
-        assert "#123" in result.output
+        assert "fix: bla #123" in result.output
 
         repo._active_branch = "release/v0.8"
 

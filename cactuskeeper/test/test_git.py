@@ -47,18 +47,18 @@ def test_get_release_branches_with_custom_regex():
 def test_get_bugfixes_relative():
     repo = MockRepo(branches=["release/1.2", "master"])
 
-    repo.add_commit("release/1.2", "fix: something #2")
+    repo.add_commit("release/1.2", "fix: important thing \n more info #2")
     repo.add_commit("release/1.2", "release: v1.2.1")
-    repo.add_commit("release/1.2", "fix: something #1")
+    repo.add_commit("release/1.2", "fix: something \n more info #1")
     repo.add_commit("release/1.2", "release: 1.2", sha=2)
-    repo.add_commit("release/1.2", "fix: something #0", sha=1)
+    repo.add_commit("release/1.2", "fix: something \n more info #0", sha=1)
 
     repo.add_existing_commit("master", 1)
     repo.add_existing_commit("master", 2)
 
     result = get_bugfixes_for_branch(repo, "release/1.2", "master")
 
-    assert result == ["#2", "#1"]
+    assert result == {"#2": "fix: important thing", "#1": "fix: something"}
 
 
 def test_get_bugfixes_absolute():
@@ -66,10 +66,10 @@ def test_get_bugfixes_absolute():
 
     repo.add_commits(
         "release/1.2", [
-            "fix: something #2", "release: v1.2.1",
-            "fix: something #1", "release: 1.2", "fix: something #0"
+            "fix: something2 \n #2", "release: v1.2.1",
+            "fix: something1 \n #1", "release: 1.2", "fix: something0 \n #0"
         ]
     )
     result = get_bugfixes_for_branch(repo, "release/1.2")
 
-    assert result == ["#2", "#1", "#0"]
+    assert set(result.keys()) == set(["#2", "#1", "#0"])

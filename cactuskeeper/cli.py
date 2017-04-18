@@ -40,8 +40,8 @@ def check(repo):
                     base=current_branch, other=branch["branch"]
                 )
             )
-            for fix in fixes:
-                click.echo("\t {0}".format(fix))
+            for issue, shortlog in fixes.items():
+                click.echo("\t {shortlog} {issue}".format(shortlog=shortlog, issue=issue))
     if clean:
         click.echo("The current branch is clean")
     else:

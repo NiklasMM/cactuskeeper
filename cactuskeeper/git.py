@@ -4,6 +4,8 @@ import re
 
 RELEASE_BRANCHES = re.compile(r"release/v(?P<version>\d+\.\d+(\.\d+)?)")
 
+COMMIT_REGEX = re.compile(r"^(?P<shortlog>.+)(\n|.)*(?P<issue>#\d+)")
+
 
 def get_release_branches(repo, release_branch_re=RELEASE_BRANCHES):
     release_branches = []
@@ -23,17 +25,17 @@ def get_release_branches(repo, release_branch_re=RELEASE_BRANCHES):
 def get_bugfixes_for_branch(repo, branch, base_branch=None):
     if base_branch is not None:
         commits_on_branch = takewhile(
-            lambda commit: commit not in repo.iter_commits(base_branch, max_count=100),
-            repo.iter_commits(branch, max_count=10)
+            lambda commit: commit not in repo.iter_commits(base_branch),
+            repo.iter_commits(branch)
         )
     else:
         commits_on_branch = repo.iter_commits(branch)
 
-    result = []
+    result = {}
     for commit in commits_on_branch:
         if commit.message.startswith("release"):
             continue
-        m = re.search("(#\d+)", commit.message)
+        m = COMMIT_REGEX.match(commit.message)
         if m:
-            result.append(m.group(0))
+            result[m.group("issue")] = m.group("shortlog").strip()
     return result
