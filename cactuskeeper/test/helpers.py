@@ -19,7 +19,12 @@ class MockRepo(mock.MagicMock):
             sha = self.sha_counter
             self.sha_counter += 1
 
-        commit = mock.Mock(message=commit_message, binsha=sha)
+        commit = mock.Mock(message=commit_message, hexsha=str(sha), parents=[])
+        # try to mock the parents list
+        try:
+            self.commits[branch][-1].parents.append(commit)
+        except IndexError:
+            pass
         self.commits[branch].append(commit)
         self.commits_by_sha[sha] = commit
 
