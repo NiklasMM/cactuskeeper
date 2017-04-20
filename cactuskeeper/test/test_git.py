@@ -4,7 +4,12 @@ import re
 
 import pytest
 
-from cactuskeeper.git import get_bugfixes_for_branch, get_release_branches
+from cactuskeeper.git import (
+    get_bugfixes_for_branch,
+    get_commits_since_commit,
+    get_latest_release_commit,
+    get_release_branches,
+)
 from cactuskeeper.test.helpers import MockRepo
 
 
@@ -42,6 +47,36 @@ def test_get_release_branches_with_custom_regex():
     assert 1 == len(result)
 
     assert StrictVersion("1.2") == result[0]["version"]
+
+
+def test_get_latest_release_commit():
+
+    repo = MockRepo(branches=["master"])
+    repo.add_commits(
+        "master", [
+            "fix: something2 \n #2", "release: v1.2.1",
+            "fix: something1 \n #1", "release: 1.2", "fix: something0 \n #0"
+        ]
+    )
+    release = get_latest_release_commit(repo, "master")
+
+    assert release.shortlog == "release: v1.2.1"
+
+
+def test_get_commits_since_commit():
+
+    repo = MockRepo(branches=["master"])
+
+    repo.add_commits("master", ["fix: something2 \n #2", "release: v1.2.1"])
+
+    repo.add_commit("master", "base_commit", sha="123456")
+
+    repo.add_commits("master", ["another", "yet another"])
+
+    commits = get_commits_since_commit(repo, "master", "123456")
+
+    assert 2 == len(commits)
+    assert "release: v1.2.1" == commits[-1].shortlog
 
 
 def test_get_bugfixes_relative():
