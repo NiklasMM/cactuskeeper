@@ -78,7 +78,7 @@ def get_bugfixes_for_branch(repo, branch, base_branch=None):
         if commit.version:
             continue
         if commit.issue:
-            result[commit.issue] = commit.shortlog
+            result[commit.issue] = commit
     return result
 
 

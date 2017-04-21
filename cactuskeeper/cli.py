@@ -22,6 +22,10 @@ def cli(context, repo):
 @cli.command()
 @click.pass_context
 def check(context):
+    """
+        Checks if the current branch of the repository is clean, i.e.
+        no previous release branches contain fixes not present on this branch.
+    """
     repo = Repo(context.obj["repo"])
 
     current_branch = repo.active_branch
@@ -43,13 +47,16 @@ def check(context):
         if len(fixes) > 0:
             clean = False
             click.echo(
-                "Branch '{other}' contains the following "
+                "\nBranch '{other}' contains the following "
                 "fixes not present in '{base}'".format(
-                    base=current_branch, other=branch["branch"]
+                    base=current_branch, other=click.style(str(branch["branch"]), fg="yellow")
                 )
             )
-            for issue, shortlog in fixes.items():
-                click.echo("\t {shortlog} {issue}".format(shortlog=shortlog, issue=issue))
+
+            for issue, commit in fixes.items():
+                click.echo("\t({hexsha})\t{issue}\t{shortlog}".format(
+                    shortlog=commit.shortlog, issue=issue, hexsha=commit.object.hexsha[:11]
+                ))
     if clean:
         click.echo("The current branch is clean")
     else:

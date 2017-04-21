@@ -25,6 +25,7 @@ class MockRepo(mock.MagicMock):
             self.commits[branch][-1].parents.append(commit)
         except IndexError:
             pass
+
         self.commits[branch].append(commit)
         self.commits_by_sha[sha] = commit
 
