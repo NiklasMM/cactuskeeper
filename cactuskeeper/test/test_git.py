@@ -108,4 +108,4 @@ def test_get_bugfixes_absolute():
     )
     result = get_bugfixes_for_branch(repo, "release/1.2")
 
-    assert set(result.keys()) == set(["#2", "#1", "#0"])
+    assert set(result.keys()) == set(["#2", "#1", "#0", "_list"])

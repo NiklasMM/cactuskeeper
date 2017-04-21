@@ -73,12 +73,15 @@ def get_bugfixes_for_branch(repo, branch, base_branch=None):
 
     commits = get_commits_while(repo, branch, test)
 
-    result = {}
+    result = {
+        "_list": []
+    }
     for commit in commits:
         if commit.version:
             continue
         if commit.issue:
             result[commit.issue] = commit
+            result["_list"].append(commit)
     return result
 
 

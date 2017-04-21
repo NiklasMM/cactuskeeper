@@ -44,7 +44,7 @@ def check(context):
             repo, branch["branch"], current_branch
         )
 
-        if len(fixes) > 0:
+        if len(fixes["_list"]) > 0:
             clean = False
             click.echo(
                 "\nBranch '{other}' contains the following "
@@ -53,9 +53,9 @@ def check(context):
                 )
             )
 
-            for issue, commit in fixes.items():
+            for commit in fixes["_list"]:
                 click.echo("\t({hexsha})\t{issue}\t{shortlog}".format(
-                    shortlog=commit.shortlog, issue=issue, hexsha=commit.object.hexsha[:11]
+                    shortlog=commit.shortlog, issue=commit.issue, hexsha=commit.object.hexsha[:11]
                 ))
     if clean:
         click.echo("The current branch is clean")
