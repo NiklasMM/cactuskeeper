@@ -50,7 +50,7 @@ class TestCheck:
             # master is not clean
             assert result.exit_code == 1
             assert "release/v0.9" in result.output
-            assert "fix: bla #123" in result.output
+            assert "#123\tfix: bla" in result.output
 
             repo._active_branch = "release/v0.8"
 

@@ -93,7 +93,8 @@ def test_get_bugfixes_relative():
 
     result = get_bugfixes_for_branch(repo, "release/1.2", "master")
 
-    assert result == {"#2": "fix: important thing", "#1": "fix: something"}
+    assert result["#2"].shortlog == "fix: important thing"
+    assert result["#1"].shortlog == "fix: something"
 
 
 def test_get_bugfixes_absolute():
