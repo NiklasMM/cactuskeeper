@@ -34,12 +34,14 @@ class TestCheck:
         """
         repo = MockRepo(branches=["master", "release/v0.9", "release/v0.8"])
 
+        repo.add_commit("release/v0.9", "fix: foo \n foo #456")
         repo.add_commit("release/v0.9", "fix: bla \n blubi #123")
         repo.add_commit("release/v0.9", "release: v0.9", sha=1)
         repo.add_commit("release/v0.8", "release: v0.8", sha=0)
 
         repo.add_existing_commit("release/v0.8", 0)
 
+        repo.add_commit("master", "fix: foo \n foo #456")
         repo.add_existing_commit("master", 0)
         repo.add_existing_commit("master", 1)
 
@@ -47,6 +49,7 @@ class TestCheck:
             runner = CliRunner()
 
             result = runner.invoke(cli, ["check"])
+
             # master is not clean
             assert result.exit_code == 1
             assert "release/v0.9" in result.output
@@ -57,6 +60,27 @@ class TestCheck:
             result = runner.invoke(cli, ["check"])
             # release/v0.8 is clean
             assert result.exit_code == 0
+
+    def test_check_clean_with_issues(self):
+        """
+            Check that a branch is clean if issue fixes on the other branch exist, but also
+            on this branch
+        """
+        repo = MockRepo(branches=["master", "release/v0.9"])
+
+        repo.add_commit("release/v0.9", "fix: bla \n blubi #123")
+        repo.add_commit("release/v0.9", "release: v0.9", sha=1)
+
+        repo.add_commit("master", "fix: bla \n blubi #123")
+        repo.add_existing_commit("master", 1)
+
+        with mock.patch("cactuskeeper.cli.Repo", return_value=repo):
+            runner = CliRunner()
+
+            result = runner.invoke(cli, ["check"])
+            # master is clean
+            assert result.exit_code == 0
+            assert "The current branch is clean" in result.output
 
 
 class TestRelease:

@@ -38,13 +38,15 @@ def check(context):
         else:
             branches_to_check.append(branch)
 
+    fixes_on_base = set(get_bugfixes_for_branch(repo, current_branch).keys())
+
     clean = True
     for branch in branches_to_check:
         fixes = get_bugfixes_for_branch(
             repo, branch["branch"], current_branch
         )
 
-        if len(fixes["_list"]) > 0:
+        if len(set(fixes.keys()) - fixes_on_base) > 0:
             clean = False
             click.echo(
                 "\nBranch '{other}' contains the following "
@@ -54,6 +56,8 @@ def check(context):
             )
 
             for commit in fixes["_list"]:
+                if commit.issue in fixes_on_base:
+                    continue
                 click.echo("\t({hexsha})\t{issue}\t{shortlog}".format(
                     shortlog=commit.shortlog, issue=commit.issue, hexsha=commit.object.hexsha[:11]
                 ))
