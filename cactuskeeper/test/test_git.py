@@ -54,8 +54,11 @@ def test_get_latest_release_commit():
     repo = MockRepo(branches=["master"])
     repo.add_commits(
         "master", [
-            "fix: something2 \n #2", "release: v1.2.1",
-            "fix: something1 \n #1", "release: 1.2", "fix: something0 \n #0"
+            "fix: something0 \n #0",
+            "release: 1.2",
+            "fix: something1 \n #1",
+            "release: v1.2.1",
+            "fix: something2 \n #2"
         ]
     )
     release = get_latest_release_commit(repo, "master")
@@ -67,11 +70,12 @@ def test_get_commits_since_commit():
 
     repo = MockRepo(branches=["master"])
 
-    repo.add_commits("master", ["fix: something2 \n #2", "release: v1.2.1"])
-
+    # add some commits from before the base commit
+    repo.add_commits("master", ["first commit", "second commit"])
+    # add the base commit
     repo.add_commit("master", "base_commit", sha="123456")
-
-    repo.add_commits("master", ["another", "yet another"])
+    # add commits after the base commit
+    repo.add_commits("master", ["release: v1.2.1", "fix: something2 \n #2"])
 
     commits = get_commits_since_commit(repo, "master", "123456")
 
@@ -82,11 +86,11 @@ def test_get_commits_since_commit():
 def test_get_bugfixes_relative():
     repo = MockRepo(branches=["release/1.2", "master"])
 
-    repo.add_commit("release/1.2", "fix: important thing \n more info #2")
-    repo.add_commit("release/1.2", "release: v1.2.1")
-    repo.add_commit("release/1.2", "fix: something \n more info #1")
-    repo.add_commit("release/1.2", "release: 1.2", sha=2)
     repo.add_commit("release/1.2", "fix: something \n more info #0", sha=1)
+    repo.add_commit("release/1.2", "release: 1.2", sha=2)
+    repo.add_commit("release/1.2", "fix: something \n more info #1")
+    repo.add_commit("release/1.2", "release: v1.2.1")
+    repo.add_commit("release/1.2", "fix: important thing \n more info #2")
 
     repo.add_existing_commit("master", 1)
     repo.add_existing_commit("master", 2)
@@ -102,8 +106,11 @@ def test_get_bugfixes_absolute():
 
     repo.add_commits(
         "release/1.2", [
-            "fix: something2 \n #2", "release: v1.2.1",
-            "fix: something1 \n #1", "release: 1.2", "fix: something0 \n #0"
+            "fix: something0 \n #0"
+            "release: 1.2",
+            "fix: something1 \n #1",
+            "release: v1.2.1",
+            "fix: something2 \n #2",
         ]
     )
     result = get_bugfixes_for_branch(repo, "release/1.2")
