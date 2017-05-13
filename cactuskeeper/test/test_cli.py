@@ -34,16 +34,16 @@ class TestCheck:
         """
         repo = MockRepo(branches=["master", "release/v0.9", "release/v0.8"])
 
-        repo.add_commit("release/v0.9", "fix: foo \n foo #456")
-        repo.add_commit("release/v0.9", "fix: bla \n blubi #123")
+        repo.add_commit("release/v0.9", "release: v0.8", sha=0)
         repo.add_commit("release/v0.9", "release: v0.9", sha=1)
-        repo.add_commit("release/v0.8", "release: v0.8", sha=0)
+        repo.add_commit("release/v0.9", "fix: bla \n blubi #123")
+        repo.add_commit("release/v0.9", "fix: foo \n foo #456")
 
         repo.add_existing_commit("release/v0.8", 0)
 
-        repo.add_commit("master", "fix: foo \n foo #456")
         repo.add_existing_commit("master", 0)
         repo.add_existing_commit("master", 1)
+        repo.add_commit("master", "fix: foo \n foo #456")
 
         with mock.patch("cactuskeeper.cli.Repo", return_value=repo):
             runner = CliRunner()
@@ -68,11 +68,11 @@ class TestCheck:
         """
         repo = MockRepo(branches=["master", "release/v0.9"])
 
-        repo.add_commit("release/v0.9", "fix: bla \n blubi #123")
         repo.add_commit("release/v0.9", "release: v0.9", sha=1)
+        repo.add_commit("release/v0.9", "fix: bla \n blubi #123")
 
-        repo.add_commit("master", "fix: bla \n blubi #123")
         repo.add_existing_commit("master", 1)
+        repo.add_commit("master", "fix: bla \n blubi #123")
 
         with mock.patch("cactuskeeper.cli.Repo", return_value=repo):
             runner = CliRunner()
@@ -89,12 +89,12 @@ class TestRelease:
     def setup_mock_repo(self):
         repo = MockRepo(branches=["master"])
 
-        repo.add_commits("master", [
-            "fix: something2 \n #2", "fix: something1 \n #1",
-            "release: v1.2.3 \n info", "fix: something0 \n #0"
-        ])
-
         repo.add_commit("master", "base", sha="12345")
+
+        repo.add_commits("master", [
+            "fix: something0 \n #0", "release: v1.2.3 \n info",
+            "fix: something1 \n #1", "fix: something2 \n #2"
+        ])
 
         with mock.patch("cactuskeeper.cli.Repo", return_value=repo):
             yield
