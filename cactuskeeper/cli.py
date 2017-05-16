@@ -10,6 +10,8 @@ from cactuskeeper.git import (
     get_release_branches,
 )
 
+from cactuskeeper.files import read_config_file
+
 
 @click.group()
 @click.option('--repo', default=".", help="Path to the repository root")
@@ -18,13 +20,16 @@ def cli(context, repo):
     context.obj = {}
     context.obj["repo"] = repo
 
+    context.obj["config"] = read_config_file(repo)
+
 
 @cli.command()
 @click.pass_context
 def check(context):
     """
-        Checks if the current branch of the repository is clean, i.e.
-        no previous release branches contain fixes not present on this branch.
+        Checks if the current branch is clean.
+        A branch is considered clean, if no previous release branches
+        contain fixes not present on this branch.
     """
     repo = Repo(context.obj["repo"])
 
@@ -103,3 +108,10 @@ def release(context, no_check):
             base_commit = click.prompt('Please enter the commit sha you want to use')
         else:
             changelog_confirmed = True
+
+
+@cli.command()
+@click.pass_context
+def config(context):
+    """ Print the parsed config and exit """
+    click.echo(context.obj["config"])
