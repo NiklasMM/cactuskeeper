@@ -1,4 +1,3 @@
-from collections import namedtuple
 from distutils.version import StrictVersion
 from itertools import takewhile
 import re
@@ -20,7 +19,7 @@ class CommitMetadata:
         self.issue = ""
 
         m = COMMIT_REGEX.match(commit.message)
-        if m is not None:
+        if m is not None:  # pragma: no cover, the regex matches everything
             if m.group("issue"):
                 self.issue = m.group("issue")
             if m.group("version"):
@@ -43,10 +42,25 @@ def get_release_branches(repo, release_branch_re=RELEASE_BRANCHES):
 
 
 def get_latest_release_commit(repo, branch):
+    """
+        Finds the lates release commit in a repo on a given branch.
+
+        :param repo:
+            The repository to process.
+        :param branch:
+            The branch on which the function should look for commits.
+
+        :return:
+            A CommitMetadata object for the latest release commit or
+            None if no release commit could be found.
+    """
 
     for commit in repo.iter_commits(branch):
         if commit.message.startswith("release:"):
             return CommitMetadata(commit)
+
+    # no release found
+    return None
 
 
 def get_commits_while(repo, branch, test):
