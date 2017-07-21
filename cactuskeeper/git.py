@@ -25,6 +25,38 @@ class CommitMetadata:
             if m.group("version"):
                 self.version = m.group("version")
 
+    def next_version(self, step="bugfix"):
+        """
+            Calculates the next version for release commits.
+
+            :param step:
+                The level on which the next version should be created.
+                Can be "major", "minor" or "bugfix"
+
+            :return:
+                The next version as a string or None if the commit is not a release commit.
+        """
+        if not self.version:
+            return None
+
+        current_version = StrictVersion(self.version)
+
+        major = current_version.version[0]
+        minor = current_version.version[1]
+        bugfix = current_version.version[2]
+
+        if step == "major":
+            major = major + 1
+            minor = 0
+            bugfix = 0
+        if step == "minor":
+            minor = minor + 1
+            bugfix = 0
+        if step == "bugfix":
+            bugfix = bugfix + 1
+
+        return ".".join(map(lambda x: str(x), [major, minor, bugfix]))
+
 
 def get_release_branches(repo, release_branch_re=RELEASE_BRANCHES):
     release_branches = []
