@@ -3,14 +3,13 @@ import sys
 import click
 from git import Repo
 
+from cactuskeeper.files import read_config_file
 from cactuskeeper.git import (
     get_bugfixes_for_branch,
     get_commits_since_commit,
     get_latest_release_commit,
     get_release_branches,
 )
-
-from cactuskeeper.files import read_config_file
 
 
 @click.group()
@@ -113,5 +112,7 @@ def release(context, no_check):
 @cli.command()
 @click.pass_context
 def config(context):
-    """ Print the parsed config and exit """
-    click.echo(context.obj["config"])
+    click.echo("Running with the following configuration:\n")
+
+    for key, value in context.obj["config"].items():
+        click.echo("\t{0}: {1}".format(key, value))
