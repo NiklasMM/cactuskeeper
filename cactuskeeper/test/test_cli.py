@@ -12,6 +12,39 @@ def test_help():
     assert result.exit_code == 0
 
 
+def test_config_without_file():
+    runner = CliRunner()
+    with runner.isolated_filesystem():
+        result = runner.invoke(cli, ["config"])
+        assert result.exit_code == 0
+        assert "Running with the following configuration:" in result.output
+
+        assert ("tagged-files: []" in result.output)
+
+
+def test_config():
+
+    file_content = """
+    [cactuskeeper]
+    tagged-files =
+        version_info.json
+        some_other_file.py
+    """
+    runner = CliRunner()
+    with runner.isolated_filesystem():
+        with open("setup.cfg", "w") as f:
+            f.write(file_content)
+
+        result = runner.invoke(cli, ["config"])
+        assert result.exit_code == 0
+        assert "Running with the following configuration:"
+
+        assert (
+            "tagged-files: ['version_info.json', 'some_other_file.py']"
+            in result.output
+        )
+
+
 class TestCheck:
     def test_check_master_clean(self):
         """ master is clean if no release branch holds fixes not in master """
