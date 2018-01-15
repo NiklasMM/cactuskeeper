@@ -109,11 +109,9 @@ def get_commits_while(repo, branch, test):
 
 def get_bugfixes_for_branch(repo, branch, base_branch=None):
 
-    def commit_not_in_branch(commit):
-        return commit not in repo.iter_commits(base_branch)
-
     if base_branch is not None:
-        test = commit_not_in_branch
+        base_commits = set(c.hexsha for c in repo.iter_commits(base_branch))
+        test = lambda x: x.hexsha not in base_commits
     else:
         test = None
 
