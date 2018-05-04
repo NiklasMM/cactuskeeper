@@ -3,7 +3,7 @@ import mock
 import pytest
 
 from cactuskeeper.cli import cli
-from cactuskeeper.test.helpers import MockRepo
+from cactuskeeper.test.helpers import MockRepo, write_config_file
 
 
 def test_help():
@@ -60,7 +60,8 @@ class TestCheck:
             assert result.exit_code == 0
             assert "The current branch is clean" in result.output
 
-    def test_check_release_clean(self):
+    @pytest.mark.parametrize("ignore_issues", [[], ["#123"]])
+    def test_check_release_clean(self, ignore_issues, tmpdir):
         """
             release branches are clean if no earlier releases hold fixes
             not in this release
@@ -78,15 +79,20 @@ class TestCheck:
         repo.add_existing_commit("master", 1)
         repo.add_commit("master", "fix: foo \n foo #456")
 
+        write_config_file(str(tmpdir), {"ignore_issues": ",".join(ignore_issues)})
+
         with mock.patch("cactuskeeper.cli.Repo", return_value=repo):
             runner = CliRunner()
 
-            result = runner.invoke(cli, ["check"])
+            result = runner.invoke(cli, ["--repo", str(tmpdir), "check"])
 
-            # master is not clean
-            assert result.exit_code == 1
-            assert "release/v0.9" in result.output
-            assert "#123\tfix: bla" in result.output
+            # master is only clean, when #123 is ignored
+            if ignore_issues:
+                assert result.exit_code == 0
+            else:
+                assert result.exit_code == 1
+                assert "release/v0.9" in result.output
+                assert "#123\tfix: bla" in result.output
 
             repo._active_branch = "release/v0.8"
 

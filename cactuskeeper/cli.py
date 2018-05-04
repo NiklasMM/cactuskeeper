@@ -31,7 +31,7 @@ def check(context):
         contain fixes not present on this branch.
     """
     repo = Repo(context.obj["repo"])
-
+    ignored_issues = set(context.obj["config"]["ignore_issues"])
     current_branch = repo.active_branch
     release_branches = get_release_branches(repo)
 
@@ -49,8 +49,8 @@ def check(context):
         fixes = get_bugfixes_for_branch(
             repo, branch["branch"], current_branch
         )
-
-        if len(set(fixes.keys()) - fixes_on_base) > 0:
+        missing_fixes = fixes.keys() - fixes_on_base - ignored_issues
+        if len(missing_fixes) > 0:
             clean = False
             click.echo(
                 "\nBranch '{other}' contains the following "
@@ -59,9 +59,8 @@ def check(context):
                 )
             )
 
-            for commit in fixes["_list"]:
-                if commit.issue in fixes_on_base:
-                    continue
+            for issue_number in missing_fixes:
+                commit = fixes[issue_number]
                 click.echo("\t({hexsha})\t{issue}\t{shortlog}".format(
                     shortlog=commit.shortlog, issue=commit.issue, hexsha=commit.object.hexsha[:11]
                 ))
