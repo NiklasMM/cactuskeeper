@@ -26,6 +26,10 @@ def read_config_file(directory):
     # Processing
     config["tagged-files"] = config.get("tagged-files", "").split("\n")
     # prune out empty ones
-    config["tagged-files"] = [f for f in config["tagged-files"] if f]
+    config["tagged-files"] = [_ for _ in config["tagged-files"] if _]
+
+    config["ignore_issues"] = config.get("ignore_issues", "").split(",")
+    # prune out empty ones
+    config["ignore_issues"] = [_ for _ in config["ignore_issues"] if _]
 
     return config

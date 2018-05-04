@@ -1,4 +1,6 @@
 from collections import defaultdict
+import configparser
+import os
 import uuid
 
 import mock
@@ -48,3 +50,25 @@ class MockRepo(mock.MagicMock):
             return self.branches[0]
         else:
             return self._active_branch
+
+
+def write_config_file(base_dir, content):
+    """
+        Writes a new setup.cfg file with a "cactuskeeper" section to a given directory.
+
+        :param base_dir:
+            The directory the config file will be placed in.
+        :type base_dir:
+            str
+        :param content:
+            A dictionary holding cactuskeeper section entries as key/value pairs.
+        :type content:
+            dict
+    """
+    parser = configparser.ConfigParser()
+    parser.add_section("cactuskeeper")
+    for key, value in content.items():
+        parser.set("cactuskeeper", key, value)
+
+    with open(os.path.join(base_dir, "setup.cfg"), "w") as f:
+        parser.write(f)
