@@ -91,6 +91,10 @@ def release(context, no_check):
         commits = get_commits_since_commit(repo, current_branch, base_commit)
         not_found = False
 
+        if len(commits) == 0:
+            click.echo("Last commit is already a release.")
+            break
+
         # check if the specified base_commit is actually in the parents of the last found commit
         # otherwise we went until the end of the branch and did not find it
         if not any(c.hexsha.startswith(base_commit) for c in commits[-1].object.parents):

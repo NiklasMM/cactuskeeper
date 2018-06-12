@@ -51,27 +51,21 @@ def test_get_release_branches_with_custom_regex():
     assert StrictVersion("1.2") == result[0]["version"]
 
 
-@pytest.mark.parametrize("empty", [True, False])
-def test_get_latest_release_commit(empty):
+@pytest.mark.parametrize("additional_commits", [True, False])
+def test_get_latest_release_commit(additional_commits):
 
     repo = MockRepo(branches=["master"])
-    if not empty:
-        repo.add_commits(
-            "master", [
-                "fix: something0 \n #0",
-                "release: 1.2",
-                "fix: something1 \n #1",
-                "release: v1.2.1",
-                "fix: something2 \n #2",
-                "dev: something unrelated"
-            ]
-        )
+    repo.add_commits("master", ["release: v1.2"])
+    if additional_commits:
+        repo.add_commits("master", ["fix: something1 \n #1"])
     release = get_latest_release_commit(repo, "master")
+    assert release.shortlog == "release: v1.2"
 
-    if not empty:
-        assert release.shortlog == "release: v1.2.1"
-    else:
-        assert release is None
+
+def test_get_latest_release_commit_empty_repo():
+    repo = MockRepo(branches=["master"])
+    release = get_latest_release_commit(repo, "master")
+    assert release is None
 
 
 def test_get_commits_since_commit():

@@ -124,7 +124,7 @@ class TestCheck:
 
 class TestRelease:
 
-    @pytest.fixture(autouse=True)
+    @pytest.fixture()
     def setup_mock_repo(self):
         repo = MockRepo(branches=["master"])
 
@@ -138,7 +138,19 @@ class TestRelease:
         with mock.patch("cactuskeeper.cli.Repo", return_value=repo):
             yield
 
-    def test_release_no_custom_base(self):
+    def test_latest_commit_already_a_release(self):
+        repo = MockRepo(branches=["master"])
+
+        repo.add_commit("master", "release: v1.2.3 \n info")
+
+        with mock.patch("cactuskeeper.cli.Repo", return_value=repo):
+            runner = CliRunner()
+            result = runner.invoke(cli, ["release"])
+
+            assert result.exit_code == 0
+            assert "Last commit is already a release." in result.output
+
+    def test_release_no_custom_base(self, setup_mock_repo):
             runner = CliRunner()
             result = runner.invoke(cli, ["release"], input="n\n")
 
@@ -150,7 +162,7 @@ class TestRelease:
 
             assert "fix: something0" not in result.output
 
-    def test_release_custom_base(self):
+    def test_release_custom_base(self, setup_mock_repo):
             runner = CliRunner()
             result = runner.invoke(cli, ["release"], input="y\n12345\nn\n")
 
@@ -162,7 +174,7 @@ class TestRelease:
             assert "fix: something0" in result.output
             assert "The specified commit was not found." not in result.output
 
-    def test_release_custom_base_not_found(self):
+    def test_release_custom_base_not_found(self, setup_mock_repo):
             runner = CliRunner()
             result = runner.invoke(cli, ["release"], input="y\nidonotexist\n12345\nn\n")
 
