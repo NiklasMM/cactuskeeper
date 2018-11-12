@@ -54,12 +54,12 @@ def check(context):
             clean = False
             click.echo(
                 "\nBranch '{other}' contains the following "
-                "fixes not present in '{base}'".format(
+                "fixes not present in '{base}' (newest first)".format(
                     base=current_branch, other=click.style(str(branch["branch"]), fg="yellow")
                 )
             )
-
-            for issue_number in missing_fixes:
+            fixes_keys = list(fixes.keys())
+            for issue_number in sorted(missing_fixes, key=lambda x: fixes_keys.index(x)):
                 commit = fixes[issue_number]
                 click.echo("\t({hexsha})\t{issue}\t{shortlog}".format(
                     shortlog=commit.shortlog, issue=commit.issue, hexsha=commit.object.hexsha[:11]
