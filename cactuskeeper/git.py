@@ -1,3 +1,4 @@
+from collections import OrderedDict
 from distutils.version import StrictVersion
 from itertools import takewhile
 import re
@@ -117,15 +118,12 @@ def get_bugfixes_for_branch(repo, branch, base_branch=None):
 
     commits = get_commits_while(repo, branch, test)
 
-    result = {
-        "_list": []
-    }
+    result = OrderedDict()
     for commit in commits:
         if commit.version:
             continue
         if commit.issue:
             result[commit.issue] = commit
-            result["_list"].append(commit)
     return result
 
 
