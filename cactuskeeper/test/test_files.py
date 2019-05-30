@@ -1,9 +1,6 @@
 from cactuskeeper.files import read_config_file
 
-EMPTY_CONFIG = {
-    "tagged-files": [],
-    "ignore_issues": [],
-}
+EMPTY_CONFIG = {"tagged-files": [], "ignore_issues": []}
 
 
 def test_read_empty_config(tmpdir):

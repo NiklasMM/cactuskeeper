@@ -12,7 +12,6 @@ COMMIT_REGEX = re.compile(
 
 
 class CommitMetadata:
-
     def __init__(self, commit):
         self.shortlog = commit.message.split("\n")[0].strip()
         self.object = commit
@@ -66,10 +65,7 @@ def get_release_branches(repo, release_branch_re=RELEASE_BRANCHES):
         m = release_branch_re.match(str(branch))
         if m:
             version = StrictVersion(m.group("version"))
-            release_branches.append({
-                "version": version,
-                "branch": branch
-            })
+            release_branches.append({"version": version, "branch": branch})
 
     return sorted(release_branches, key=lambda x: x["version"], reverse=True)
 
@@ -128,4 +124,6 @@ def get_bugfixes_for_branch(repo, branch, base_branch=None):
 
 
 def get_commits_since_commit(repo, branch, commit_hexsha):
-    return get_commits_while(repo, branch, lambda commit: commit.hexsha != commit_hexsha)
+    return get_commits_while(
+        repo, branch, lambda commit: commit.hexsha != commit_hexsha
+    )

@@ -19,7 +19,7 @@ def test_config_without_file():
         assert result.exit_code == 0
         assert "Running with the following configuration:" in result.output
 
-        assert ("tagged-files: []" in result.output)
+        assert "tagged-files: []" in result.output
 
 
 def test_config():
@@ -40,8 +40,7 @@ def test_config():
         assert "Running with the following configuration:"
 
         assert (
-            "tagged-files: ['version_info.json', 'some_other_file.py']"
-            in result.output
+            "tagged-files: ['version_info.json', 'some_other_file.py']" in result.output
         )
 
 
@@ -123,17 +122,21 @@ class TestCheck:
 
 
 class TestRelease:
-
     @pytest.fixture()
     def setup_mock_repo(self):
         repo = MockRepo(branches=["master"])
 
         repo.add_commit("master", "base", sha="12345")
 
-        repo.add_commits("master", [
-            "fix: something0 \n #0", "release: v1.2.3 \n info",
-            "fix: something1 \n #1", "fix: something2 \n #2"
-        ])
+        repo.add_commits(
+            "master",
+            [
+                "fix: something0 \n #0",
+                "release: v1.2.3 \n info",
+                "fix: something1 \n #1",
+                "fix: something2 \n #2",
+            ],
+        )
 
         with mock.patch("cactuskeeper.cli.Repo", return_value=repo):
             yield
@@ -151,37 +154,37 @@ class TestRelease:
             assert "Last commit is already a release." in result.output
 
     def test_release_no_custom_base(self, setup_mock_repo):
-            runner = CliRunner()
-            result = runner.invoke(cli, ["release"], input="n\n")
+        runner = CliRunner()
+        result = runner.invoke(cli, ["release"], input="n\n")
 
-            assert result.exit_code == 0
-            assert "The last release on the branch is 1.2.3." in result.output
+        assert result.exit_code == 0
+        assert "The last release on the branch is 1.2.3." in result.output
 
-            assert "fix: something2" in result.output
-            assert "fix: something1" in result.output
+        assert "fix: something2" in result.output
+        assert "fix: something1" in result.output
 
-            assert "fix: something0" not in result.output
+        assert "fix: something0" not in result.output
 
     def test_release_custom_base(self, setup_mock_repo):
-            runner = CliRunner()
-            result = runner.invoke(cli, ["release"], input="y\n12345\nn\n")
+        runner = CliRunner()
+        result = runner.invoke(cli, ["release"], input="y\n12345\nn\n")
 
-            assert result.exit_code == 0
-            assert "The last release on the branch is 1.2.3." in result.output
+        assert result.exit_code == 0
+        assert "The last release on the branch is 1.2.3." in result.output
 
-            assert "fix: something2" in result.output
-            assert "fix: something1" in result.output
-            assert "fix: something0" in result.output
-            assert "The specified commit was not found." not in result.output
+        assert "fix: something2" in result.output
+        assert "fix: something1" in result.output
+        assert "fix: something0" in result.output
+        assert "The specified commit was not found." not in result.output
 
     def test_release_custom_base_not_found(self, setup_mock_repo):
-            runner = CliRunner()
-            result = runner.invoke(cli, ["release"], input="y\nidonotexist\n12345\nn\n")
+        runner = CliRunner()
+        result = runner.invoke(cli, ["release"], input="y\nidonotexist\n12345\nn\n")
 
-            assert result.exit_code == 0
-            assert "The last release on the branch is 1.2.3." in result.output
+        assert result.exit_code == 0
+        assert "The last release on the branch is 1.2.3." in result.output
 
-            assert "fix: something2" in result.output
-            assert "fix: something1" in result.output
-            assert "fix: something0" in result.output
-            assert "The specified commit was not found." in result.output
+        assert "fix: something2" in result.output
+        assert "fix: something1" in result.output
+        assert "fix: something0" in result.output
+        assert "The specified commit was not found." in result.output
