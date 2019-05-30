@@ -9,8 +9,10 @@ before_install:
 install:
   - "pip install ."
   - "pip install -U -r test_requirements.txt"
+  - if [[ $TRAVIS_PYTHON_VERSION == 3.6 ]]; then pip install black; fi
 # command to run tests
-script: pytest
-
+script:
+  - pytest
+  - if [[ $TRAVIS_PYTHON_VERSION == 3.6 ]]; then black --check .; fi
 notifications:
   email: false

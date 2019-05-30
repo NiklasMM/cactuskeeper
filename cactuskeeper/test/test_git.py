@@ -1,4 +1,3 @@
-
 from distutils.version import StrictVersion
 import re
 
@@ -21,13 +20,13 @@ from cactuskeeper.test.helpers import MockRepo
         ([], []),
         (
             ("release/v1.23", "release/v0.4", "some_other_branch"),
-            [StrictVersion("1.23"), StrictVersion("0.4")]
+            [StrictVersion("1.23"), StrictVersion("0.4")],
         ),
         (
             ("release/v0.4", "release/v1.23", "some_other_branch"),
-            [StrictVersion("1.23"), StrictVersion("0.4")]
-        )
-    ]
+            [StrictVersion("1.23"), StrictVersion("0.4")],
+        ),
+    ],
 )
 def test_get_release_branches(branches, expected):
     repo = MockRepo(branches=branches)
@@ -107,13 +106,13 @@ def test_get_bugfixes_absolute():
     repo = MockRepo(branches=["release/1.2", "master"])
 
     repo.add_commits(
-        "release/1.2", [
-            "fix: something0 \n #0"
-            "release: 1.2",
+        "release/1.2",
+        [
+            "fix: something0 \n #0" "release: 1.2",
             "fix: something1 \n #1",
             "release: v1.2.1",
             "fix: something2 \n #2",
-        ]
+        ],
     )
     result = get_bugfixes_for_branch(repo, "release/1.2")
 

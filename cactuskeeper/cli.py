@@ -13,7 +13,7 @@ from cactuskeeper.git import (
 
 
 @click.group()
-@click.option('--repo', default=".", help="Path to the repository root")
+@click.option("--repo", default=".", help="Path to the repository root")
 @click.pass_context
 def cli(context, repo):
     context.obj = {}
@@ -46,24 +46,29 @@ def check(context):
 
     clean = True
     for branch in branches_to_check:
-        fixes = get_bugfixes_for_branch(
-            repo, branch["branch"], current_branch
-        )
+        fixes = get_bugfixes_for_branch(repo, branch["branch"], current_branch)
         missing_fixes = fixes.keys() - fixes_on_base - ignored_issues
         if len(missing_fixes) > 0:
             clean = False
             click.echo(
                 "\nBranch '{other}' contains the following "
                 "fixes not present in '{base}' (newest first)".format(
-                    base=current_branch, other=click.style(str(branch["branch"]), fg="yellow")
+                    base=current_branch,
+                    other=click.style(str(branch["branch"]), fg="yellow"),
                 )
             )
             fixes_keys = list(fixes.keys())
-            for issue_number in sorted(missing_fixes, key=lambda x: fixes_keys.index(x)):
+            for issue_number in sorted(
+                missing_fixes, key=lambda x: fixes_keys.index(x)
+            ):
                 commit = fixes[issue_number]
-                click.echo("\t({hexsha})\t{issue}\t{shortlog}".format(
-                    shortlog=commit.shortlog, issue=commit.issue, hexsha=commit.object.hexsha[:11]
-                ))
+                click.echo(
+                    "\t({hexsha})\t{issue}\t{shortlog}".format(
+                        shortlog=commit.shortlog,
+                        issue=commit.issue,
+                        hexsha=commit.object.hexsha[:11],
+                    )
+                )
     if clean:
         click.echo("The current branch is clean")
     else:
@@ -71,7 +76,9 @@ def check(context):
 
 
 @cli.command()
-@click.option('--no-check', default=False, help="Omit integrity check before making the release")
+@click.option(
+    "--no-check", default=False, help="Omit integrity check before making the release"
+)
 @click.pass_context
 def release(context, no_check):
     repo = Repo(context.obj["repo"])
@@ -81,7 +88,9 @@ def release(context, no_check):
     release = get_latest_release_commit(repo, current_branch)
 
     click.echo(
-        "The last release on the branch is {0}.".format(click.style(release.version, fg="red"))
+        "The last release on the branch is {0}.".format(
+            click.style(release.version, fg="red")
+        )
     )
     changelog_confirmed = False
     base_commit = release.object.hexsha
@@ -97,17 +106,21 @@ def release(context, no_check):
 
         # check if the specified base_commit is actually in the parents of the last found commit
         # otherwise we went until the end of the branch and did not find it
-        if not any(c.hexsha.startswith(base_commit) for c in commits[-1].object.parents):
+        if not any(
+            c.hexsha.startswith(base_commit) for c in commits[-1].object.parents
+        ):
             click.echo("The specified commit was not found.")
             not_found = True
         else:
             for commit in commits:
-                click.echo("\t{shortlog} {issue}".format(
-                    shortlog=commit.shortlog, issue=commit.issue
-                ))
+                click.echo(
+                    "\t{shortlog} {issue}".format(
+                        shortlog=commit.shortlog, issue=commit.issue
+                    )
+                )
 
         if not_found or click.confirm("Do you want to give a base commit manually?"):
-            base_commit = click.prompt('Please enter the commit sha you want to use')
+            base_commit = click.prompt("Please enter the commit sha you want to use")
         else:
             changelog_confirmed = True
 
