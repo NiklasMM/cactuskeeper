@@ -57,6 +57,9 @@ def check(context):
                     other=click.style(str(branch["branch"]), fg="yellow"),
                 )
             )
+
+            commits_to_pick = []
+
             fixes_keys = list(fixes.keys())
             for issue_number in sorted(
                 missing_fixes, key=lambda x: fixes_keys.index(x)
@@ -69,6 +72,12 @@ def check(context):
                         hexsha=commit.object.hexsha[:11],
                     )
                 )
+                commits_to_pick.append(commit.object.hexsha[:11])
+
+            pick_command = "git cherry-pick -x " + " -x ".join(
+                reversed(commits_to_pick)
+            )
+            click.echo(f"Pick them all using this command: '{pick_command}'")
     if clean:
         click.echo("The current branch is clean")
     else:
