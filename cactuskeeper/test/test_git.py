@@ -1,4 +1,4 @@
-from distutils.version import StrictVersion
+from packaging.version import Version
 import re
 
 from mock import Mock
@@ -20,11 +20,11 @@ from cactuskeeper.test.helpers import MockRepo
         ([], []),
         (
             ("release/v1.23", "release/v0.4", "some_other_branch"),
-            [StrictVersion("1.23"), StrictVersion("0.4")],
+            [Version("1.23"), Version("0.4")],
         ),
         (
             ("release/v0.4", "release/v1.23", "some_other_branch"),
-            [StrictVersion("1.23"), StrictVersion("0.4")],
+            [Version("1.23"), Version("0.4")],
         ),
     ],
 )
@@ -47,7 +47,7 @@ def test_get_release_branches_with_custom_regex():
 
     assert 1 == len(result)
 
-    assert StrictVersion("1.2") == result[0]["version"]
+    assert Version("1.2") == result[0]["version"]
 
 
 @pytest.mark.parametrize("additional_commits", [True, False])

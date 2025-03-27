@@ -7,6 +7,7 @@ requires-python = ">=3.10"
 dependencies = [
     "click>=8.1.8",
     "gitpython>=3.1.44",
+    "packaging>=24.2",
 ]
 
 [project.scripts]
@@ -20,9 +21,6 @@ dev = [
     "pytest-cov>=6.0.0",
     "pytest-timeout>=2.3.1",
 ]
-
-[build-system]
-requires = ["setuptools"]
 
 [tool.pytest.ini_options]
 timeout = 5

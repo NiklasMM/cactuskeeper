@@ -1,6 +1,6 @@
 from collections import OrderedDict
-from distutils.version import StrictVersion
 from itertools import takewhile
+from packaging.version import Version
 import re
 
 RELEASE_BRANCHES = re.compile(r"release/v(?P<version>\d+\.\d+(\.\d+)?)")
@@ -39,11 +39,11 @@ class CommitMetadata:
         if not self.version:
             return None
 
-        current_version = StrictVersion(self.version)
+        current_version = Version(self.version)
 
-        major = current_version.version[0]
-        minor = current_version.version[1]
-        bugfix = current_version.version[2]
+        major = current_version.major
+        minor = current_version.minor
+        bugfix = current_version.micro
 
         if step == "major":
             major = major + 1
@@ -64,7 +64,7 @@ def get_release_branches(repo, release_branch_re=RELEASE_BRANCHES):
     for branch in repo.branches:
         m = release_branch_re.match(str(branch))
         if m:
-            version = StrictVersion(m.group("version"))
+            version = Version(m.group("version"))
             release_branches.append({"version": version, "branch": branch})
 
     return sorted(release_branches, key=lambda x: x["version"], reverse=True)
