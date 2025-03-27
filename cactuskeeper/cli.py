@@ -26,9 +26,9 @@ def cli(context, repo):
 @click.pass_context
 def check(context):
     """
-        Checks if the current branch is clean.
-        A branch is considered clean, if no previous release branches
-        contain fixes not present on this branch.
+    Checks if the current branch is clean.
+    A branch is considered clean, if no previous release branches
+    contain fixes not present on this branch.
     """
     repo = Repo(context.obj["repo"])
     ignored_issues = set(context.obj["config"]["ignore_issues"])

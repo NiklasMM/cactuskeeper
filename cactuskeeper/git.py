@@ -27,14 +27,14 @@ class CommitMetadata:
 
     def next_version(self, step="bugfix"):
         """
-            Calculates the next version for release commits.
+        Calculates the next version for release commits.
 
-            :param step:
-                The level on which the next version should be created.
-                Can be "major", "minor" or "bugfix"
+        :param step:
+            The level on which the next version should be created.
+            Can be "major", "minor" or "bugfix"
 
-            :return:
-                The next version as a string or None if the commit is not a release commit.
+        :return:
+            The next version as a string or None if the commit is not a release commit.
         """
         if not self.version:
             return None
@@ -72,16 +72,16 @@ def get_release_branches(repo, release_branch_re=RELEASE_BRANCHES):
 
 def get_latest_release_commit(repo, branch):
     """
-        Finds the lates release commit in a repo on a given branch.
+    Finds the lates release commit in a repo on a given branch.
 
-        :param repo:
-            The repository to process.
-        :param branch:
-            The branch on which the function should look for commits.
+    :param repo:
+        The repository to process.
+    :param branch:
+        The branch on which the function should look for commits.
 
-        :return:
-            A CommitMetadata object for the latest release commit or
-            None if no release commit could be found.
+    :return:
+        A CommitMetadata object for the latest release commit or
+        None if no release commit could be found.
     """
 
     for commit in repo.iter_commits(branch):

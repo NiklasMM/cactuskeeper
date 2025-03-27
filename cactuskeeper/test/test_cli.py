@@ -46,7 +46,7 @@ def test_config():
 
 class TestCheck:
     def test_check_master_clean(self):
-        """ master is clean if no release branch holds fixes not in master """
+        """master is clean if no release branch holds fixes not in master"""
         repo = MockRepo(branches=["master", "release/v0.9"])
 
         repo.add_commit("release/v0.9", "release: v0.9", sha=1)
@@ -62,8 +62,8 @@ class TestCheck:
     @pytest.mark.parametrize("ignore_issues", [[], ["#123"]])
     def test_check_release_clean(self, ignore_issues, tmpdir):
         """
-            release branches are clean if no earlier releases hold fixes
-            not in this release
+        release branches are clean if no earlier releases hold fixes
+        not in this release
         """
         repo = MockRepo(branches=["master", "release/v0.9", "release/v0.8"])
 
@@ -101,8 +101,8 @@ class TestCheck:
 
     def test_check_clean_with_issues(self):
         """
-            Check that a branch is clean if issue fixes on the other branch exist, but also
-            on this branch
+        Check that a branch is clean if issue fixes on the other branch exist, but also
+        on this branch
         """
         repo = MockRepo(branches=["master", "release/v0.9"])
 

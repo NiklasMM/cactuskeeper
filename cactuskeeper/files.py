@@ -4,15 +4,15 @@ import os
 
 def read_config_file(directory):
     """
-        Read a setup.cfg file from the given directory and parse the `cactuskeeper`
-        section out of it. Process the given settings and return a dict representing
-        them.
+    Read a setup.cfg file from the given directory and parse the `cactuskeeper`
+    section out of it. Process the given settings and return a dict representing
+    them.
 
-        :param directory:
-            The directory the ``setup.cfg`` file can be found in.
+    :param directory:
+        The directory the ``setup.cfg`` file can be found in.
 
-        :return:
-            A dict holding the cactuskeeper configuration.
+    :return:
+        A dict holding the cactuskeeper configuration.
     """
     path = os.path.join(directory, "setup.cfg")
     parser = configparser.ConfigParser()

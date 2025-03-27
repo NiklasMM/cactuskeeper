@@ -54,16 +54,16 @@ class MockRepo(mock.MagicMock):
 
 def write_config_file(base_dir, content):
     """
-        Writes a new setup.cfg file with a "cactuskeeper" section to a given directory.
+    Writes a new setup.cfg file with a "cactuskeeper" section to a given directory.
 
-        :param base_dir:
-            The directory the config file will be placed in.
-        :type base_dir:
-            str
-        :param content:
-            A dictionary holding cactuskeeper section entries as key/value pairs.
-        :type content:
-            dict
+    :param base_dir:
+        The directory the config file will be placed in.
+    :type base_dir:
+        str
+    :param content:
+        A dictionary holding cactuskeeper section entries as key/value pairs.
+    :type content:
+        dict
     """
     parser = configparser.ConfigParser()
     parser.add_section("cactuskeeper")

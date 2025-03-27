@@ -1,0 +1,37 @@
+[project]
+name = "cactuskeeper"
+version = "0.2.0"
+description = "A tool to help following the cactus workflow for git"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "click>=8.1.8",
+    "gitpython>=3.1.44",
+]
+
+[project.scripts]
+hello = "cactuskeeper.cli:cli"
+
+[dependency-groups]
+dev = [
+    "black>=25.1.0",
+    "mock>=5.2.0",
+    "pytest>=8.3.5",
+    "pytest-cov>=6.0.0",
+    "pytest-timeout>=2.3.1",
+]
+
+[build-system]
+requires = ["setuptools"]
+
+[tool.pytest.ini_options]
+timeout = 5
+addopts = [
+    "--cov=cactuskeeper",
+    "--cov-report=term-missing",
+    "--cov-fail-under=100"
+]
+
+[tool.coverage.run]
+branch = true
+omit = ["cactuskeeper/test*"]
