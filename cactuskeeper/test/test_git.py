@@ -133,7 +133,7 @@ def test_commit_get_next_version():
 
 
 def test_commit_get_next_version_no_release():
-    """ next_version for non-release commits returns None """
+    """next_version for non-release commits returns None"""
 
     commit = CommitMetadata(Mock(message="Something, but surely no release"))
 

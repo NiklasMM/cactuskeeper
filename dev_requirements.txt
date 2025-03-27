@@ -1,5 +1,0 @@
-pytest
-pytest-cov
-pytest-timeout
-mock
-black; python_version >= '3.6'
